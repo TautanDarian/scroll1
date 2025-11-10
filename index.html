@@ -85,6 +85,24 @@ model-viewer.hero__model {
       max-width:1200px;
       width:100%;
     }
+@media (max-width: 767px) {
+  /* Force model to render once and stay fixed on mobile */
+  model-viewer#heroModel {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    transform: none !important;
+    z-index: 1;
+  }
+
+  /* Because it’s fixed, we’ll fade it out smoothly when hero unpins */
+  .hero.exited model-viewer#heroModel {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+}
 
     h1 {
       font-size:clamp(36px,8vw,84px);
@@ -162,6 +180,7 @@ model-viewer.hero__model {
       <br>scroll to continue.
     </p>
   </div>
+       
 </section>
 
       <section class="spacer" aria-hidden="true"></section>
@@ -249,4 +268,5 @@ model-viewer.hero__model {
   </script>
 </body>
 </html>
+
 
