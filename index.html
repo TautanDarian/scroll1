@@ -1,176 +1,625 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3D Parallax Portfolio</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Portofolio of Darian's Design</title>
 
-<!-- Three.js -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
+  <style>
+    :root {
+      --bg:#0b0b0b;
+      --fg:#fff;
+      --accent:#df5f9c;
+    }
 
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    font-family: "Poppins", sans-serif;
-    background-color: #000;
-  }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html,body { height:100%; font-family:Inter,"Helvetica Neue",Arial,sans-serif; -webkit-font-smoothing:antialiased; background:var(--bg); color:var(--fg); overflow-x:hidden; }
 
-  /* === HERO PARALLAX SECTION === */
-  .hero {
-    position: relative;
-    height: 100vh;
-    overflow: hidden;
-    perspective: 1px;
-    transform-style: preserve-3d;
-  }
+    .data-scroll-container { will-change:transform; }
+    section { min-height:100vh; position:relative; display:flex; align-items:center; justify-content:center; padding:6vh 6vw; }
+    .spacer { height:0vh; }
+/* ---------------- LOGO SECTION ---------------- */
+.logos {
+  background:#000;
+  color:#fff;
+  min-height:80vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:8vh 6vw;
+  text-align:center;
+  position:relative;
+  z-index:4;
+}
 
-  #modelCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transform: translateZ(-1px) scale(2);
-    z-index: 0;
-  }
+.logos__content {
+  max-width:1000px;
+  width:100%;
+}
 
-  .hero-title {
-    position: relative;
-    z-index: 1;
-    color: white;
-    text-align: center;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 3rem;
-    letter-spacing: 2px;
-    text-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-  }
+.logos__title {
+  font-size:clamp(28px,5vw,54px);
+  font-weight:600;
+  margin-bottom:2.5rem;
+  opacity:0;
+  transform:translateY(40px);
+}
 
-  /* === LOGO SECTION === */
-  .logos-section {
-    background-color: black;
-    color: white;
-    text-align: center;
-    padding: 120px 20px;
-  }
+.logos__grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:32px;
+  align-items:center;
+  justify-items:center;
+}
 
-  .logos-section h2 {
-    font-size: 2rem;
-    margin-bottom: 50px;
-  }
+.logo {
+  width:340px;
+  max-width:100%;
+  height:164px;
+  object-fit:contain;
+  opacity:0;
+  transform:translateY(20px) scale(0.97);
+  transition:transform 0.25s ease;
+  will-change:transform,opacity;
+  filter:grayscale(20%); /* subtle unified look */
+}
 
-  .logos-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 60px;
-  }
+.logo:hover,
+.logo:focus {
+  transform:translateY(0) scale(1.02);
+  filter:grayscale(0);
+  outline: none;
+}
 
-  .logos-container img {
-    width: 120px;
-    transition: transform 0.3s ease, filter 0.3s ease;
-  }
+/* Responsive tweaks */
+@media (max-width:900px){
+  .logos__grid { gap:24px; }
+  .logo { width:120px; height:56px; }
+}
 
-  .logos-container img:hover {
-    transform: scale(1.1);
-    filter: brightness(1.3);
-  }
+@media (max-width:600px){
+  .logos__grid { gap:20px; grid-template-columns:repeat(2,1fr); }
+  .logos__title { font-size:clamp(20px,6vw,30px); margin-bottom:1.5rem; }
+  .logo { width:100px; height:48px; }
+}
 
-  html {
-    scroll-behavior: smooth;
-  }
-</style>
+    /* ---------------- HERO SECTION ---------------- */
+    .hero {
+      height:100vh;
+      overflow:hidden;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* 3D MODEL LAYER */
+    model-viewer#heroModel {
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:1;
+      opacity:0;
+      transition:opacity 0.5s ease;
+      will-change:transform,opacity;
+      background:transparent;
+      pointer-events:none;
+    }
+
+    /* Fade in while hero is active */
+    .hero.inview model-viewer#heroModel {
+      opacity:1;
+    }
+
+    /* Decorative gradient overlay */
+    .hero__ring {
+      position:absolute;
+      inset:0;
+      z-index:2;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(255,255,255,0.04) 0%, transparent 18%),
+        conic-gradient(from 180deg at 50% 50%, rgba(223,95,156,0.06), rgba(44,152,255,0.04), rgba(223,95,156,0.06));
+      filter:blur(40px) saturate(110%);
+      transform:scale(1.2);
+      mix-blend-mode:overlay;
+    }
+
+    /* HERO TEXT */
+    .hero__content {
+      position:relative;
+      z-index:3;
+      text-align:center;
+      padding:0 4vw;
+      max-width:1200px;
+      width:100%;
+    }
+
+    h1 {
+      font-size:clamp(36px,8vw,84px);
+      line-height:0.95;
+      margin:0;
+      font-weight:700;
+      letter-spacing:-0.02em;
+    }
+
+    p.lead {
+      margin-top:1rem;
+      font-size:clamp(16px,2.2vw,20px);
+      opacity:0.9;
+    }
+
+    /* NEXT SECTION */
+    .next {
+      background:linear-gradient(180deg,#fff 0%,#f7f7f9 100%);
+      color:#111;
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-start;
+      padding:10vh 8vw;
+      min-height:70vh;
+    }
+
+    .cards {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:24px;
+      width:100%;
+      max-width:1200px;
+    }
+
+    .card {
+      background:#fff;
+      color:#111;
+      padding:24px;
+      border-radius:12px;
+      box-shadow:0 6px 30px rgba(10,10,20,0.06);
+    }
+
+    /* Mobile adjustments */
+    @media (max-width:767px) {
+      /* Removed the forced `position:fixed !important` on model-viewer to avoid duplication */
+      model-viewer#heroModel {
+        position:absolute;
+        top:0; left:0;
+        width:100%;
+        height:100vh;
+        transform:none;
+        z-index:1;
+      }
+      .hero__ring { filter:blur(24px); }
+      .next { padding:8vh 6vw; }
+      .card { padding:18px; }
+    }
+      /* ---------------- VIDEO SECTION ---------------- */
+.video-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.video-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.35);
+  text-align: center;
+  color: #fff;
+}
+
+.video-overlay h2 {
+  font-size: clamp(32px,6vw,80px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.video-section { position: relative; z-index: 1; }
+.text-section { position: relative; z-index: 2; }
+
+/* ---------------- TEXT SECTION ---------------- */
+.text-section {
+  background: #111;
+  color: #fff;
+  padding: 14vh 8vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.text-content {
+  max-width: 900px;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.text-content h2 {
+  font-size: clamp(28px,5vw,60px);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.text-content p {
+  font-size: clamp(16px,2vw,20px);
+  opacity: 0.85;
+  line-height: 1.6;
+}
+
+/* ---------------- FOOTER ---------------- */
+.site-footer {
+  background: #000;
+  color: #aaa;
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+  </style>
+
+  <!-- 3D model-viewer component -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
 </head>
 <body>
 
-<!-- === HERO / PARALLAX 3D MODEL === -->
-<section class="hero">
-  <canvas id="modelCanvas"></canvas>
-  <div class="hero-title">Abstract Design</div>
-</section>
+  <div data-scroll-container class="data-scroll-container">
+    <main>
+      <!-- HERO -->
+      <section class="hero" id="hero">
+        <model-viewer
+          id="heroModel"
+          src="abstract_design.glb"
+          alt="3D model"
+          shadow-intensity="1"
+          camera-controls
+          auto-rotate
+          disable-zoom
+          environment-image="neutral"
+          exposure="1">
+        </model-viewer>
 
-<!-- === LOGO SECTION === -->
-<section class="logos-section">
-  <h2>Our Creative Tools</h2>
-  <div class="logos-container">
-    <img src="ps.png" alt="Photoshop Logo">
-    <img src="pr.png" alt="Premiere Pro Logo">
-    <img src="ill.png" alt="Illustrator Logo">
-    <img src="id.png" alt="InDesign Logo">
+        <div class="hero__ring" aria-hidden="true" data-scroll data-scroll-speed="0.4"></div>
+
+        <div class="hero__content" data-scroll data-scroll-sticky data-scroll-target="#hero">
+          <h1 id="title" data-scroll data-scroll-speed="0.8">
+            Portofolio of <br>Darian's Design
+          </h1>
+          <p class="lead" id="subtitle" data-scroll data-scroll-speed="0.6">
+            Because aspect matters — scroll to continue.
+          </p>
+        </div>
+      </section>
+
+     <!-- LOGO SECTION -->
+<section class="logos" id="logos">
+  <div class="logos__content" data-scroll data-scroll-speed="0.3">
+    <h2 class="logos__title">My most useful skills</h2>
+    <div class="logos__grid" role="list" aria-label="Partner logos">
+      <!-- NOTE: I removed loading="lazy" from markup and control lazy/eager from script for reliability with Locomotive -->
+      <img src="ps.png" alt="Logo 1" class="logo" role="listitem">
+      <img src="pr.png" alt="Logo 2" class="logo" role="listitem">
+      <img src="ill.png" alt="Logo 3" class="logo" role="listitem">
+      <img src="id.png" alt="Logo 4" class="logo" role="listitem">
+    </div>
+  </div>
+</section>
+      <!-- NEXT SECTION -->
+      <section class="next" id="next">
+        <div class="cards">
+          <div class="card"><strong>Project</strong><p>Case study preview with image and text.</p></div>
+          <div class="card"><strong>Studio</strong><p>Services, approach, and credits.</p></div>
+          <div class="card"><strong>Contact</strong><p>Say hi — email & social links.</p></div>
+        </div>
+      </section>
+
+    <!-- FULLSCREEN VIDEO SECTION -->
+<section class="video-section">
+  <video autoplay muted loop playsinline class="bg-video">
+    <!-- Replace with your own mp4/webm -->
+    <source src="motion.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="video-overlay">
+    <h2>Experience the Flow</h2>
   </div>
 </section>
 
-<script>
-  // === 3D MODEL SETUP ===
-  const canvas = document.getElementById("modelCanvas");
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    45,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    100
-  );
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: true
-  });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
-  camera.position.z = 4;
+<!-- TEXT SECTION -->
+<section class="text-section">
+  <div class="text-content">
+    <h2>Crafting immersive, human-centered interfaces</h2>
+    <p>
+      We merge motion, code, and storytelling to create
+      interactive environments that feel alive — bridging
+      art and technology in every pixel.
+    </p>
+  </div>
+</section>
 
-  // Lights
-  const light = new THREE.DirectionalLight(0xffffff, 1.2);
-  light.position.set(2, 3, 5);
-  scene.add(light);
-  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+<!-- FOOTER -->
+<footer class="site-footer">
+  <p>© 2025 Portofolio of Darian's Design — All rights reserved.<br> Contact: stefandarian483@gmail.com</p>
+</footer>
 
-  // Load your local 3D model
-  let model;
-  const loader = new THREE.GLTFLoader();
-  loader.load(
-    "abstract_design.glb",
-    (gltf) => {
-      model = gltf.scene;
-      model.scale.set(2, 2, 2);
-      scene.add(model);
-    },
-    undefined,
-    (error) => {
-      console.error("Error loading model:", error);
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+    const ENABLE_SMOOTH = window.innerWidth >= 768 && !prefersReduced;
+    const FORCE_NATIVE_SCROLL = window.innerWidth < 768;
+    let locoScroll = null;
+
+    // Helper: return scroller option for ScrollTrigger calls if loco is active
+    function scrollerOption() {
+      return (locoScroll) ? { scroller: document.querySelector('[data-scroll-container]') } : {};
     }
-  );
 
-  // Animate model rotation
-  function animate() {
-    requestAnimationFrame(animate);
-    if (model) model.rotation.y += 0.005;
-    renderer.render(scene, camera);
+    // Update/loading strategy for logos:
+    // When locomotive is active we want images to load immediately (some browsers don't trigger native lazy load inside transformed containers).
+    function updateLogoLoading() {
+      document.querySelectorAll('.logo').forEach(img => {
+        try {
+          if (locoScroll) {
+            // ensure loaded when loco is running
+            img.loading = 'eager';
+            // Some browsers may still not have started a request if attribute changed late:
+            if (!img.complete && img.dataset && img.dataset.src) img.src = img.dataset.src;
+          } else {
+            // allow lazy load on native scroll (desktop w/out loco or mobile)
+            // only set lazy if browser supports it
+            if ('loading' in HTMLImageElement.prototype) img.loading = 'lazy';
+          }
+        } catch(e) { /* defensive */ }
+      });
+    }
+
+    /* ---------------- Locomotive + GSAP setup ---------------- */
+    function initLocoAndGSAP(){
+      locoScroll = new LocomotiveScroll({
+        el: document.querySelector('[data-scroll-container]'),
+        smooth: true,
+        inertia: 0.75,
+        multiplier: 1,
+        tablet: { smooth: true },
+        smartphone: { smooth: false }
+      });
+
+      ScrollTrigger.scrollerProxy(document.querySelector('[data-scroll-container]'), {
+        scrollTop(value) {
+          return arguments.length
+            ? locoScroll.scrollTo(value, 0, 0)
+            : locoScroll.scroll.instance.scroll.y;
+        },
+        getBoundingClientRect() {
+          return { top:0, left:0, width:window.innerWidth, height:window.innerHeight };
+        },
+        pinType: document.querySelector('[data-scroll-container]').style.transform ? "transform" : "fixed"
+      });
+
+      locoScroll.on('scroll', ScrollTrigger.update);
+      ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
+      ScrollTrigger.refresh();
+
+      // make sure logos load correctly when loco is ready
+      updateLogoLoading();
+
+      buildAnimations(true);
+    }
+
+    /* ---------------- Hero animation ---------------- */
+    function buildAnimations(usingLoco){
+      // kill previous ScrollTriggers
+      ScrollTrigger.getAll().forEach(st => st.kill());
+      const scroller = usingLoco ? document.querySelector('[data-scroll-container]') : undefined;
+
+      const heroTimeline = gsap.timeline({
+        scrollTrigger: Object.assign({
+          trigger: "#hero",
+          start: "top top",
+          end: "+=120%",
+          scrub: 0.9,
+          pin: true,
+          anticipatePin: 1
+        }, scrollerOption())
+      });
+
+      heroTimeline
+        .to("#title", { yPercent:-24, scale:0.6, autoAlpha:0.08, ease:"power1.out" }, 0)
+        .to("#subtitle", { y:-40, autoAlpha:0, ease:"power1.out" }, 0.05)
+        .to(".hero__ring", { scale:1.05, rotation:8, autoAlpha:0.9, ease:"none" }, 0);
+    }
+
+    /* ---------------- Model fade + parallax ---------------- */
+    // Create the visibility trigger with scroller awareness
+    function createModelVisibilityTrigger() {
+      const opts = Object.assign({
+        trigger: "#hero",
+        start: "top top",
+        end: "bottom top",
+        onEnter: () => document.querySelector(".hero")?.classList.add("inview"),
+        onEnterBack: () => document.querySelector(".hero")?.classList.add("inview"),
+        onLeave: () => document.querySelector(".hero")?.classList.remove("inview"),
+        onLeaveBack: () => document.querySelector(".hero")?.classList.remove("inview"),
+      }, scrollerOption());
+
+      // clear previous similar triggers to avoid duplicates
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.vars && st.vars.trigger === "#hero" && st.vars.start === "top top") st.kill();
+      });
+
+      ScrollTrigger.create(opts);
+    }
+
+    // Subtle parallax of the model (desktop only)
+    function createModelParallax() {
+      // kill existing parallax triggers for heroModel
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.vars && st.vars.trigger === "#hero" && st.vars.targets && st.vars.targets.indexOf && st.vars.targets.indexOf("#heroModel") !== -1) st.kill();
+      });
+
+      if (window.innerWidth >= 768) {
+        gsap.to("#heroModel", {
+          yPercent: 10,
+          scale: 1.05,
+          ease: "none",
+          scrollTrigger: Object.assign({
+            trigger: "#hero",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true
+          }, scrollerOption())
+        });
+      }
+    }
+
+    /* ---------------- Init conditions ---------------- */
+    if (ENABLE_SMOOTH && !isTouch && !FORCE_NATIVE_SCROLL) {
+      initLocoAndGSAP();
+    } else {
+      // No loco — make sure logos are lazy (native) and build animations with native scroller
+      updateLogoLoading();
+      buildAnimations(false);
+      // create scroll triggers that depend on scroller setting
+      createModelVisibilityTrigger();
+      createModelParallax();
+      ScrollTrigger.refresh();
+    }
+
+    /* ---------------- Handle resize ---------------- */
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const shouldEnable = window.innerWidth >= 768 && !prefersReduced && !isTouch;
+        if (shouldEnable && !locoScroll) {
+          initLocoAndGSAP();
+        } else if (!shouldEnable && locoScroll) {
+          locoScroll.destroy();
+          locoScroll = null;
+          updateLogoLoading();
+          buildAnimations(false);
+          createModelVisibilityTrigger();
+          createModelParallax();
+          ScrollTrigger.refresh();
+        } else {
+          if (locoScroll) locoScroll.update();
+          ScrollTrigger.refresh();
+        }
+      }, 200);
+    });
+
+    // Hide model during refresh to prevent flash
+    ScrollTrigger.addEventListener("refreshInit", () => {
+      document.querySelector(".hero")?.classList.remove("inview");
+    });
+
+    /* ---------------- Logos fade-in animation ---------------- */
+    // We'll use scrollerOption to make these work with loco or native scrolling
+    (function setupLogosAnimation(){
+      const SCROLLER = document.querySelector('[data-scroll-container]');
+
+      function addTitleAnim() {
+        gsap.fromTo(
+          ".logos__title",
+          { y:40, autoAlpha:0 },
+          Object.assign({
+            y:0,
+            autoAlpha:1,
+            duration:1,
+            ease:"power2.out",
+            scrollTrigger:{
+              trigger:"#logos",
+              start:"top 80%",
+              end:"bottom top",
+              toggleActions:"play none none reverse"
+            }
+          }, scrollerOption())
+        );
+      }
+
+      function addLogosAnim() {
+        gsap.utils.toArray(".logo").forEach((el, i) => {
+          gsap.fromTo(
+            el,
+            { autoAlpha:0, y:20, scale:0.97 },
+            Object.assign({
+              autoAlpha:1,
+              y:0,
+              scale:1,
+              duration:0.7,
+              delay: i * 0.08,
+              ease:"power2.out",
+              scrollTrigger:{
+                trigger:el,
+                start:"top 92%",
+                toggleActions:"play none none reverse",
+              }
+            }, scrollerOption())
+          );
+        });
+      }
+
+      addTitleAnim();
+      addLogosAnim();
+
+      if (typeof locoScroll !== 'undefined' && locoScroll) {
+        locoScroll.on('scroll', ScrollTrigger.update);
+        ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
+        ScrollTrigger.refresh();
+      }
+    })();
+
+    // ensure model triggers and parallax created once scroller is set up
+    // If loco was initialized earlier, refresh/create parallax & visibility triggers:
+    setTimeout(() => {
+      createModelVisibilityTrigger();
+      createModelParallax();
+      ScrollTrigger.refresh();
+    }, 250);
+      /* ---------------- Text Section Animation ---------------- */
+gsap.fromTo(
+  ".text-content",
+  { y: 40, autoAlpha: 0 },
+  {
+    y: 0,
+    autoAlpha: 1,
+    duration: 1.2,
+    ease: "power3.out",
+    scrollTrigger: Object.assign({
+      trigger: ".text-section",
+      start: "top 80%",
+      toggleActions: "play none none reverse",
+    }, scrollerOption())
   }
-  animate();
+);
 
-  // Handle window resize
-  window.addEventListener("resize", () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-
-  // === PARALLAX EFFECT ON SCROLL ===
-  window.addEventListener("scroll", () => {
-    const scrollY = window.scrollY;
-    const heroHeight = document.querySelector(".hero").offsetHeight;
-    const speed = 0.3; // parallax intensity
-    if (scrollY < heroHeight) {
-      const translate = scrollY * speed;
-      canvas.style.transform = `translateY(${translate}px) translateZ(-1px) scale(2)`;
-    }
-  });
-</script>
-
+  </script>
 </body>
 </html>
