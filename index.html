@@ -1,348 +1,317 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Portfolio of Darian's Design</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio of Darian's Design</title>
 
-  <style>
-    :root {
-      --bg:#0b0b0b;
-      --fg:#fff;
-      --accent:#df5f9c;
-    }
+<style>
+:root {
+  --bg:#0b0b0b;
+  --fg:#fff;
+  --accent:#df5f9c;
+}
 
-    * { box-sizing:border-box; margin:0; padding:0; }
-    html,body { height:100%; font-family:Inter,"Helvetica Neue",Arial,sans-serif; background:var(--bg); color:var(--fg); overflow-x:hidden; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body {
+  height:100%;
+  font-family:Inter,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  overflow-x:hidden;
+}
 
-    section { min-height:100vh; position:relative; display:flex; align-items:center; justify-content:center; padding:6vh 6vw; }
+section {
+  min-height:100vh;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:6vh 6vw;
+}
 
-    /* ---------------- HERO SECTION ---------------- */
-    .hero {
-      height:100vh;
-      overflow:hidden;
-      position:relative;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background-attachment: fixed;
-      background-image: url('parallax-bg.jpg'); /* replace with your hero background */
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
+/* ---------------- HERO ---------------- */
+.hero {
+  height:100vh;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: url('parallax-bg.jpg') center/cover fixed no-repeat;
+}
 
-    model-viewer#heroModel {
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      z-index:1;
-      opacity:0;
-      transition:opacity 0.5s ease;
-      background:transparent;
-      pointer-events:none;
-    }
-    .hero.inview model-viewer#heroModel { opacity:1; }
+model-viewer#heroModel {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:1;
+  pointer-events:none;
+}
 
-    .hero__ring {
-      position:absolute;
-      inset:0;
-      z-index:2;
-      pointer-events:none;
-      background:
-        radial-gradient(circle at 50% 45%, rgba(255,255,255,0.04) 0%, transparent 18%),
-        conic-gradient(from 180deg at 50% 50%, rgba(223,95,156,0.06), rgba(44,152,255,0.04), rgba(223,95,156,0.06));
-      filter:blur(40px) saturate(110%);
-      transform:scale(1.2);
-      mix-blend-mode:overlay;
-    }
+.hero__ring {
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,255,255,0.04) 0%, transparent 18%),
+    conic-gradient(from 180deg at 50% 50%, rgba(223,95,156,0.06), rgba(44,152,255,0.04), rgba(223,95,156,0.06));
+  filter:blur(40px) saturate(110%);
+  transform:scale(1.2);
+  mix-blend-mode:overlay;
+}
 
-    .hero__content {
-      position:relative;
-      z-index:3;
-      text-align:center;
-      padding:0 4vw;
-      max-width:1200px;
-    }
+.hero__content {
+  position:relative;
+  z-index:3;
+  text-align:center;
+  padding:0 4vw;
+  max-width:1200px;
+}
 
-    h1 {
-      font-size:clamp(36px,8vw,84px);
-      line-height:0.95;
-      margin:0;
-      font-weight:700;
-      letter-spacing:-0.02em;
-    }
-    p.lead {
-      margin-top:1rem;
-      font-size:clamp(16px,2.2vw,20px);
-      opacity:0.9;
-    }
+h1 { font-size:clamp(36px,8vw,84px); line-height:0.95; font-weight:700; }
+p.lead { margin-top:1rem; font-size:clamp(16px,2.2vw,20px); opacity:0.9; }
 
-    /* ---------------- LOGO SECTION ---------------- */
-    .logos {
-      background:#000;
-      color:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:8vh 6vw;
-      text-align:center;
-      position:relative;
-      z-index:4;
-    }
-    .logos__content { max-width:1000px; width:100%; }
-    .logos__title {
-      font-size:clamp(28px,5vw,54px);
-      font-weight:600;
-      margin-bottom:2.5rem;
-    }
-    .logos__grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-      gap:32px;
-      align-items:center;
-      justify-items:center;
-    }
-    .logo {
-      width:340px;
-      max-width:100%;
-      height:164px;
-      object-fit:contain;
-      transition:transform 0.25s ease, opacity 0.25s ease;
-      opacity:0;
-      transform:translateY(20px) scale(0.97);
-      filter:grayscale(20%);
-    }
-    .logo:hover { transform:translateY(0) scale(1.02); filter:grayscale(0); }
+/* ---------------- LOGOS ---------------- */
+.logos {
+  background:#000;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:8vh 6vw;
+  text-align:center;
+}
 
-    /* ---------------- NEXT SECTION ---------------- */
-    .next {
-      background:linear-gradient(180deg,#fff 0%,#f7f7f9 100%);
-      color:#111;
-      display:flex;
-      align-items:flex-start;
-      justify-content:flex-start;
-      padding:10vh 8vw;
-      min-height:70vh;
-    }
-    .cards {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:24px;
-      width:100%;
-      max-width:1200px;
-    }
-    .card {
-      background:#fff;
-      color:#111;
-      padding:24px;
-      border-radius:12px;
-      box-shadow:0 6px 30px rgba(10,10,20,0.06);
-    }
+.logos__content { max-width:1000px; width:100%; }
+.logos__title { font-size:clamp(28px,5vw,54px); font-weight:600; margin-bottom:2.5rem; }
+.logos__grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:32px;
+  align-items:center;
+  justify-items:center;
+}
 
-    /* ---------------- VIDEO SECTION ---------------- */
-    .video-section {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-      background-attachment: fixed;
-      background-image: url('video-fallback.jpg'); /* optional fallback image */
-      background-position: center;
-      background-size: cover;
-    }
-    .bg-video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 1;
-    }
-    .video-overlay {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.35);
-      text-align: center;
-      color: #fff;
-    }
-    .video-overlay h2 {
-      font-size: clamp(32px,6vw,80px);
-      font-weight:700;
-      letter-spacing:-0.02em;
-      text-shadow:0 4px 20px rgba(0,0,0,0.4);
-    }
+.logo {
+  width:160px;
+  max-width:100%;
+  height:auto;
+  object-fit:contain;
+  opacity:0;
+  transform:translateY(20px) scale(0.97);
+  transition: transform 0.25s ease;
+  filter:grayscale(20%);
+}
 
-    /* ---------------- TEXT SECTION ---------------- */
-    .text-section {
-      background: #111;
-      color: #fff;
-      padding: 14vh 8vw;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      background-attachment: fixed;
-      background-image: url('parallax-bg2.jpg'); /* another parallax background */
-      background-position: center;
-      background-size: cover;
-    }
-    .text-content {
-      max-width: 900px;
-      opacity: 0;
-      transform: translateY(40px);
-    }
-    .text-content h2 {
-      font-size: clamp(28px,5vw,60px);
-      margin-bottom: 1rem;
-      font-weight: 600;
-    }
-    .text-content p {
-      font-size: clamp(16px,2vw,20px);
-      opacity: 0.85;
-      line-height: 1.6;
-    }
+.logo:hover { transform:translateY(0) scale(1.02); filter:grayscale(0); }
 
-    /* ---------------- FOOTER ---------------- */
-    .site-footer {
-      background: #000;
-      color: #aaa;
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 14px;
-      letter-spacing: 0.02em;
-    }
-  </style>
+/* ---------------- NEXT SECTION ---------------- */
+.next {
+  background:linear-gradient(180deg,#fff 0%,#f7f7f9 100%);
+  color:#111;
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-start;
+  padding:10vh 8vw;
+}
 
-  <!-- 3D model-viewer -->
-  <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
+.cards {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:24px;
+  width:100%;
+  max-width:1200px;
+}
+
+.card {
+  background:#fff;
+  color:#111;
+  padding:24px;
+  border-radius:12px;
+  box-shadow:0 6px 30px rgba(10,10,20,0.06);
+}
+
+/* ---------------- VIDEO SECTION ---------------- */
+.video-section {
+  position:relative;
+  width:100%;
+  height:100vh;
+  overflow:hidden;
+}
+
+.bg-video {
+  position:absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  z-index:1;
+}
+
+.video-overlay {
+  position:relative;
+  z-index:2;
+  width:100%; height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.35);
+  text-align:center;
+  color:#fff;
+}
+
+.video-overlay h2 {
+  font-size:clamp(32px,6vw,80px);
+  font-weight:700;
+  letter-spacing:-0.02em;
+  text-shadow:0 4px 20px rgba(0,0,0,0.4);
+}
+
+/* ---------------- TEXT SECTION ---------------- */
+.text-section {
+  background:#111;
+  color:#fff;
+  padding:14vh 8vw;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  background: url('parallax-bg2.jpg') center/cover fixed no-repeat;
+}
+
+.text-content {
+  max-width:900px;
+  opacity:0;
+  transform:translateY(40px);
+}
+
+.text-content h2 { font-size:clamp(28px,5vw,60px); margin-bottom:1rem; font-weight:600; }
+.text-content p { font-size:clamp(16px,2vw,20px); opacity:0.85; line-height:1.6; }
+
+/* ---------------- FOOTER ---------------- */
+.site-footer {
+  background:#000;
+  color:#aaa;
+  text-align:center;
+  padding:2rem 1rem;
+  font-size:14px;
+  letter-spacing:0.02em;
+}
+</style>
+
+<!-- 3D model-viewer -->
+<script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
 </head>
+
 <body>
+<main>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero" id="hero">
-      <model-viewer
-        id="heroModel"
-        src="abstract_design.glb"
-        alt="3D model"
-        shadow-intensity="1"
-        camera-controls
-        auto-rotate
-        disable-zoom
-        environment-image="neutral"
-        exposure="1">
-      </model-viewer>
-      <div class="hero__ring"></div>
-      <div class="hero__content">
-        <h1 id="title">Portfolio of <br>Darian's Design</h1>
-        <p class="lead" id="subtitle">Because aspect matters — scroll to continue.</p>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <model-viewer id="heroModel" src="abstract_design.glb" alt="3D model"
+      shadow-intensity="1" camera-controls auto-rotate disable-zoom
+      environment-image="neutral" exposure="1">
+    </model-viewer>
+
+    <div class="hero__ring"></div>
+
+    <div class="hero__content">
+      <h1 id="title">Portfolio of <br>Darian's Design</h1>
+      <p class="lead" id="subtitle">Because aspect matters — scroll to continue.</p>
+    </div>
+  </section>
+
+  <!-- LOGOS -->
+  <section class="logos" id="logos">
+    <div class="logos__content">
+      <h2 class="logos__title">My most useful skills</h2>
+      <div class="logos__grid">
+        <img src="ps.png" alt="Logo 1" class="logo">
+        <img src="pr.png" alt="Logo 2" class="logo">
+        <img src="ill.png" alt="Logo 3" class="logo">
+        <img src="id.png" alt="Logo 4" class="logo">
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- LOGO SECTION -->
-    <section class="logos" id="logos">
-      <div class="logos__content">
-        <h2 class="logos__title">My most useful skills</h2>
-        <div class="logos__grid">
-          <img src="ps.png" alt="Logo 1" class="logo">
-          <img src="pr.png" alt="Logo 2" class="logo">
-          <img src="ill.png" alt="Logo 3" class="logo">
-          <img src="id.png" alt="Logo 4" class="logo">
-        </div>
-      </div>
-    </section>
+  <!-- NEXT SECTION -->
+  <section class="next" id="next">
+    <div class="cards">
+      <div class="card"><strong>Project</strong><p>Case study preview with image and text.</p></div>
+      <div class="card"><strong>Studio</strong><p>Services, approach, and credits.</p></div>
+      <div class="card"><strong>Contact</strong><p>Say hi — email & social links.</p></div>
+    </div>
+  </section>
 
-    <!-- NEXT SECTION -->
-    <section class="next" id="next">
-      <div class="cards">
-        <div class="card"><strong>Project</strong><p>Case study preview with image and text.</p></div>
-        <div class="card"><strong>Studio</strong><p>Services, approach, and credits.</p></div>
-        <div class="card"><strong>Contact</strong><p>Say hi — email & social links.</p></div>
-      </div>
-    </section>
+  <!-- VIDEO -->
+  <section class="video-section">
+    <video autoplay muted loop playsinline class="bg-video">
+      <source src="motion.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"><h2>Experience the Flow</h2></div>
+  </section>
 
-    <!-- VIDEO SECTION -->
-    <section class="video-section">
-      <video autoplay muted loop playsinline class="bg-video">
-        <source src="motion.mp4" type="video/mp4" />
-      </video>
-      <div class="video-overlay"><h2>Experience the Flow</h2></div>
-    </section>
+  <!-- TEXT -->
+  <section class="text-section">
+    <div class="text-content">
+      <h2>Crafting immersive, human-centered interfaces</h2>
+      <p>We merge motion, code, and storytelling to create interactive environments that feel alive — bridging art and technology in every pixel.</p>
+    </div>
+  </section>
 
-    <!-- TEXT SECTION -->
-    <section class="text-section">
-      <div class="text-content">
-        <h2>Crafting immersive, human-centered interfaces</h2>
-        <p>We merge motion, code, and storytelling to create interactive environments that feel alive — bridging art and technology in every pixel.</p>
-      </div>
-    </section>
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p>© 2025 Portfolio of Darian's Design — All rights reserved.<br>Contact: stefandarian483@gmail.com</p>
+  </footer>
 
-    <!-- FOOTER -->
-    <footer class="site-footer">
-      <p>© 2025 Portfolio of Darian's Design — All rights reserved.<br> Contact: stefandarian483@gmail.com</p>
-    </footer>
-  </main>
+</main>
 
-  <!-- Scripts -->
-  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
-  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+<!-- GSAP -->
+<script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+<script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
 
-  <script>
-    gsap.registerPlugin(ScrollTrigger);
+<script>
+gsap.registerPlugin(ScrollTrigger);
 
-    /* HERO SCROLL ANIMATION */
-    const heroTimeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: "#hero",
-        start: "top top",
-        end: "+=120%",
-        scrub: 0.9,
-        pin: true,
-        anticipatePin: 1
-      }
-    });
-    heroTimeline
-      .to("#title", { yPercent:-24, scale:0.6, autoAlpha:0.08, ease:"power1.out" }, 0)
-      .to("#subtitle", { y:-40, autoAlpha:0, ease:"power1.out" }, 0.05)
-      .to(".hero__ring", { scale:1.05, rotation:8, autoAlpha:0.9, ease:"none" }, 0);
+document.addEventListener('DOMContentLoaded', () => {
 
-    /* FADE IN HERO MODEL */
-    ScrollTrigger.create({
-      trigger: "#hero",
-      start: "top top",
-      end: "bottom top",
-      onEnter: () => document.querySelector(".hero")?.classList.add("inview"),
-      onEnterBack: () => document.querySelector(".hero")?.classList.add("inview"),
-      onLeave: () => document.querySelector(".hero")?.classList.remove("inview"),
-      onLeaveBack: () => document.querySelector(".hero")?.classList.remove("inview")
-    });
+  // HERO animation
+  gsap.timeline({
+    scrollTrigger:{
+      trigger:"#hero",
+      start:"top top",
+      end:"bottom top",
+      scrub:0.9,
+      pin:true
+    }
+  })
+  .to("#title", {yPercent:-24, scale:0.6, autoAlpha:0.08, ease:"power1.out"}, 0)
+  .to("#subtitle", {y:-40, autoAlpha:0, ease:"power1.out"}, 0.05)
+  .to(".hero__ring", {scale:1.05, rotation:8, autoAlpha:0.9, ease:"none"}, 0);
 
-    /* LOGO ANIMATIONS */
-    gsap.fromTo(".logos__title", {y:40, autoAlpha:0}, {
-      y:0, autoAlpha:1, duration:1, ease:"power2.out",
-      scrollTrigger:{trigger:"#logos", start:"top 80%", toggleActions:"play none none reverse"}
-    });
+  // 3D MODEL fade-in
+  gsap.fromTo("#heroModel", {autoAlpha:0}, {
+    autoAlpha:1, duration:1.2, ease:"power1.out",
+    scrollTrigger:{ trigger:"#hero", start:"top top", end:"center top", toggleActions:"play none reverse none" }
+  });
 
-    gsap.utils.toArray(".logo").forEach((el, i)=>{
-      gsap.fromTo(el, {autoAlpha:0, y:20, scale:0.97}, {
-        autoAlpha:1, y:0, scale:1, duration:0.7, delay:i*0.08, ease:"power2.out",
-        scrollTrigger:{trigger:el, start:"top 92%", toggleActions:"play none none reverse"}
-      });
-    });
+  // Optional model parallax
+  if(window.innerWidth>=768){
+    gsap.to("#heroModel",{yPercent:6, scale:1.03, ease:"none", scrollTrigger:{trigger:"#hero", start:"top bottom", end:"bottom top", scrub:true}});
+  }
 
-    /* TEXT SECTION FADE-IN */
-    gsap.fromTo(".text-content", {y:40, autoAlpha:0}, {
-      y:0, autoAlpha:1, duration:1.2, ease:"power3.out",
-      scrollTrigger:{trigger:".text-section", start:"top 80%", toggleActions:"play none none reverse"}
-    });
-  </script>
+  // LOGOS
+  gsap.fromTo(".logos__title",{y:40,autoAlpha:0},{y:0,autoAlpha:1,duration:1,ease:"power2.out",scrollTrigger:{trigger:"#logos",start:"top 80%",toggleActions:"play none none reverse"}});
+  gsap.utils.toArray(".logo").forEach((el,i)=>{
+    gsap.fromTo(el,{autoAlpha:0,y:20,scale:0.97},{autoAlpha:1,y:0,scale:1,duration:0.7,delay:i*0.08,ease:"power2.out",scrollTrigger:{trigger:el,start:"top 92%",toggleActions:"play none none reverse"}});
+  });
+
+  // TEXT SECTION
+  gsap.fromTo(".text-content",{y:40,autoAlpha:0},{y:0,autoAlpha:1,duration:1.2,ease:"power3.out",scrollTrigger:{trigger:".text-section",start:"top 80%",toggleActions:"play none none reverse"}});
+
+  ScrollTrigger.refresh();
+});
+</script>
 </body>
 </html>
