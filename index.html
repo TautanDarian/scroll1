@@ -1,192 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio of Darian's Design</title>
-<style>
-body, html {
-  height: 100%;
-  margin: 0;
-  font-family: Inter, Arial, sans-serif;
-  color: #fff;
-  background: #0b0b0b;
-  overflow-x: hidden;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio of Darian's Design</title>
 
-/* Simple W3Schools parallax */
-.parallax {
-  /* The image will be the 3D model via model-viewer screenshot or placeholder image */
-  background-image: url('hero-bg.jpg');
-  height: 100vh;
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
+  <!-- Load model-viewer -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
 
-/* Hero text */
-.hero-content h1 {
-  font-size: clamp(36px, 8vw, 84px);
-  line-height: 1.1;
-  margin: 0;
-}
-.hero-content p {
-  font-size: clamp(16px, 2vw, 22px);
-  margin-top: 1rem;
-}
+  <style>
+    /* Reset and global styles */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      font-family: Inter, Arial, sans-serif;
+      background: #0b0b0b;
+      color: #fff;
+      overflow-x: hidden;
+    }
 
-/* Logos section */
-.logos {
-  background: #000;
-  padding: 8vh 6vw;
-  text-align: center;
-}
-.logos h2 {
-  font-size: clamp(28px, 5vw, 54px);
-  margin-bottom: 2rem;
-}
-.logos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 32px;
-  justify-items: center;
-  align-items: center;
-}
-.logos-grid img {
-  width: 140px;
-  max-width: 100%;
-}
+    /* ---------- HERO SECTION WITH 3D BACKGROUND ---------- */
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
 
-/* Cards section */
-.next {
-  background: #fff;
-  color: #111;
-  padding: 10vh 8vw;
-}
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
-}
-.card {
-  background: #fff;
-  color: #111;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 6px 30px rgba(10,10,20,0.06);
-}
+    model-viewer#heroModel {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      pointer-events: none; /* so user can’t accidentally interact */
+    }
 
-/* Video section */
-.video-section {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-}
-.video-section video {
-  position: absolute;
-  top:0;
-  left:0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.video-overlay {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0,0,0,0.35);
-  text-align: center;
-}
-.video-overlay h2 {
-  font-size: clamp(32px,6vw,80px);
-}
+    .hero__content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 4vw;
+    }
 
-/* Text section */
-.text-section {
-  background: #111;
-  padding: 14vh 8vw;
-  text-align: center;
-}
-.text-section h2 {
-  font-size: clamp(28px,5vw,60px);
-  margin-bottom: 1rem;
-}
-.text-section p {
-  font-size: clamp(16px,2vw,20px);
-  line-height: 1.6;
-}
+    .hero__content h1 {
+      font-size: clamp(36px, 8vw, 84px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
 
-/* Footer */
-.site-footer {
-  background: #000;
-  color: #aaa;
-  text-align: center;
-  padding: 2rem 1rem;
-  font-size: 14px;
-}
-</style>
+    .hero__content p {
+      font-size: clamp(16px, 2.5vw, 22px);
+      opacity: 0.9;
+    }
+
+    /* ---------- LOGOS SECTION ---------- */
+    .logos {
+      background: #000;
+      padding: 8vh 6vw;
+      text-align: center;
+    }
+
+    .logos h2 {
+      font-size: clamp(28px, 5vw, 54px);
+      margin-bottom: 2rem;
+    }
+
+    .logos__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 32px;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .logos__grid img {
+      width: 140px;
+      max-width: 100%;
+      transition: transform 0.25s ease;
+      filter: grayscale(30%);
+    }
+
+    .logos__grid img:hover {
+      transform: scale(1.05);
+      filter: grayscale(0%);
+    }
+
+    /* ---------- CARDS SECTION ---------- */
+    .next {
+      background: #fff;
+      color: #111;
+      padding: 10vh 8vw;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: #fff;
+      color: #111;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 6px 30px rgba(10,10,20,0.06);
+    }
+
+    /* ---------- VIDEO SECTION ---------- */
+    .video-section {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .video-section video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .video-overlay {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.35);
+      text-align: center;
+      color: #fff;
+    }
+
+    .video-overlay h2 {
+      font-size: clamp(32px,6vw,80px);
+      font-weight: 700;
+    }
+
+    /* ---------- TEXT SECTION ---------- */
+    .text-section {
+      background: #111;
+      color: #fff;
+      padding: 14vh 8vw;
+      text-align: center;
+    }
+
+    .text-section h2 {
+      font-size: clamp(28px,5vw,60px);
+      margin-bottom: 1rem;
+    }
+
+    .text-section p {
+      font-size: clamp(16px,2vw,20px);
+      opacity: 0.85;
+      line-height: 1.6;
+    }
+
+    /* ---------- FOOTER ---------- */
+    .site-footer {
+      background: #000;
+      color: #aaa;
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 14px;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 767px) {
+      model-viewer#heroModel {
+        height: 70vh;
+      }
+      .hero {
+        height: 70vh;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- HERO PARALLAX -->
-<section class="parallax">
-  <div class="hero-content">
-    <h1>Portfolio of <br>Darian's Design</h1>
-    <p>Because aspect matters — scroll to continue.</p>
-  </div>
-</section>
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <model-viewer
+      id="heroModel"
+      src="abstract_design.glb"
+      alt="3D model background"
+      shadow-intensity="1"
+      auto-rotate
+      camera-controls
+      disable-zoom
+      environment-image="neutral"
+      exposure="1"
+      autoplay
+      loading="eager">
+    </model-viewer>
 
-<!-- LOGOS -->
-<section class="logos">
-  <h2>My most useful skills</h2>
-  <div class="logos-grid">
-    <img src="ps.png" alt="Logo 1">
-    <img src="pr.png" alt="Logo 2">
-    <img src="ill.png" alt="Logo 3">
-    <img src="id.png" alt="Logo 4">
-  </div>
-</section>
+    <div class="hero__content">
+      <h1>Portfolio of <br>Darian's Design</h1>
+      <p>Because aspect matters — scroll to continue.</p>
+    </div>
+  </section>
 
-<!-- CARDS -->
-<section class="next">
-  <div class="cards">
-    <div class="card"><strong>Project</strong><p>Case study preview with image and text.</p></div>
-    <div class="card"><strong>Studio</strong><p>Services, approach, and credits.</p></div>
-    <div class="card"><strong>Contact</strong><p>Say hi — email & social links.</p></div>
-  </div>
-</section>
+  <!-- LOGOS -->
+  <section class="logos">
+    <h2>My most useful skills</h2>
+    <div class="logos__grid">
+      <img src="ps.png" alt="Photoshop">
+      <img src="pr.png" alt="Premiere Pro">
+      <img src="ill.png" alt="Illustrator">
+      <img src="id.png" alt="InDesign">
+    </div>
+  </section>
 
-<!-- VIDEO -->
-<section class="video-section">
-  <video autoplay muted loop playsinline>
-    <source src="motion.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  <div class="video-overlay">
-    <h2>Experience the Flow</h2>
-  </div>
-</section>
+  <!-- CARDS -->
+  <section class="next">
+    <div class="cards">
+      <div class="card"><strong>Project</strong><p>Case study preview with image and text.</p></div>
+      <div class="card"><strong>Studio</strong><p>Services, approach, and credits.</p></div>
+      <div class="card"><strong>Contact</strong><p>Say hi — email & social links.</p></div>
+    </div>
+  </section>
 
-<!-- TEXT -->
-<section class="text-section">
-  <h2>Crafting immersive, human-centered interfaces</h2>
-  <p>We merge motion, code, and storytelling to create interactive environments that feel alive — bridging art and technology in every pixel.</p>
-</section>
+  <!-- VIDEO SECTION -->
+  <section class="video-section">
+    <video autoplay muted loop playsinline>
+      <source src="motion.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="video-overlay">
+      <h2>Experience the Flow</h2>
+    </div>
+  </section>
 
-<!-- FOOTER -->
-<footer class="site-footer">
-  <p>© 2025 Portfolio of Darian's Design — All rights reserved.<br>Contact: stefandarian483@gmail.com</p>
-</footer>
+  <!-- TEXT SECTION -->
+  <section class="text-section">
+    <h2>Crafting immersive, human-centered interfaces</h2>
+    <p>We merge motion, code, and storytelling to create interactive environments that feel alive — bridging art and technology in every pixel.</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p>© 2025 Portfolio of Darian's Design — All rights reserved.<br>Contact: stefandarian483@gmail.com</p>
+  </footer>
 
 </body>
 </html>
